@@ -1,6 +1,12 @@
-2003-08-07  Bo Zou  <boxzou at yahoo.com>
+2005-02-16  Bo Zou  <boxzou at yahoo.com>
 
-	* st.c: reinitialize trailing_ws.
+	* st.c: Fix a core dump when malloc(0) 
+	  > 746       ret = (char*)malloc(sizeof(char) * INT_LEN * ix * 8);
+          > 747       ret[0] = 0;
+          Note if ix == 0, then ret has no memory allocated, ret[0] = 0
+               could core_dump perl
+          Reported by: Jonathan Noack
+          Analyzed by: Anton Berezin
 
 2003-08-08  Bo Zou  <boxzou at yahoo.com>
 
@@ -8,3 +14,6 @@
 	constants.  While GCC 3.2 warns, GCC 3.3 will error.
 	* ChangeLog: added this file.
 
+2003-08-07  Bo Zou  <boxzou at yahoo.com>
+
+	* st.c: reinitialize trailing_ws.

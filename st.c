@@ -743,7 +743,7 @@ char *ediff(char *s1, char *s2)
     tmp_seg = tmp_seg->m_next;
   }
 #define INT_LEN 11
-  ret = (char*)malloc(sizeof(char) * INT_LEN * ix * 8);
+  ret = (char*)malloc(sizeof(char) * INT_LEN * ix * 8 + 1);
   ret[0] = 0;
   tmp_seg = equals;
   while (tmp_seg) {
@@ -786,4 +786,3 @@ static void print_str(char *s, int len)
     printf("%c", s[i]);
   }
 }
-

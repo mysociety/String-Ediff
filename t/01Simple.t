@@ -1,7 +1,7 @@
 #!/usr/bin/env perl -w
 use strict;
 use Test;
-BEGIN { plan tests => 6 }
+BEGIN { plan tests => 7 }
 
 use String::Ediff;
 
@@ -11,6 +11,7 @@ ok(test3(), "SUCCESS", "FAILED test3()");
 ok(test4(), "SUCCESS", "FAILED test4()");
 ok(test5(), "SUCCESS", "FAILED test5()");
 ok(test6(), "SUCCESS", "FAILED test6()");
+ok(test7(), "SUCCESS", "FAILED test6()");
 
 sub test1 {
   my $s1 = "hello world";
@@ -107,6 +108,20 @@ cd controller
     }
     return "FAILURE";
   }
+  return "SUCCESS";
+}
+
+# test for fixing this bug:
+# > 746       ret = (char*)malloc(sizeof(char) * INT_LEN * ix * 8);
+# > 747       ret[0] = 0;
+# Note if ix == 0, then ret has no memory allocated, ret[0] = 0
+#      could core_dump perl
+# Reported by: Jonathan Noack
+# Analyzed by: Anton Berezin
+sub test7 {
+  my $left_diff = " 1* \$Id\$";
+  my $right_diff = " 1* \$Header\$";
+  my $diff_str = String::Ediff::ediff($left_diff, $right_diff);
   return "SUCCESS";
 }
 
