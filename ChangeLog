@@ -1,0 +1,10 @@
+2003-08-07  Bo Zou  <boxzou at yahoo.com>
+
+	* st.c: reinitialize trailing_ws.
+
+2003-08-08  Bo Zou  <boxzou at yahoo.com>
+
+	* st.c: removed main function because it contains multi-line string
+	constants.  While GCC 3.2 warns, GCC 3.3 will error.
+	* ChangeLog: added this file.
+
