@@ -658,6 +658,7 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
     }
   }
 
+  trailing_ws = 0;
   line_num = 0;
   num_chars = 0;
   segs = equal_segs;
@@ -804,8 +805,8 @@ int main()
 //0 35 0 0 0 36 0 0 35 95 0 0 35 96 0 0 
   */
 
-  /*  char buff[] = "// $Revision: 1.74 $";
-  char buff1[] = "// $Revision: 1.75 $"; // 0 17 0 0 0 17 0 0 
+  /*  char buff[] = "// $Revision: 1.7 $";
+  char buff1[] = "// $Revision: 1.7 $"; // 0 17 0 0 0 17 0 0 
   */
   /*    char buff[] = "hello work";
   char buff1[] = "h  xello
@@ -858,7 +859,7 @@ int main()
      namingAttr->addValue(objName);
      ";// 6 54 0 0 0 52 0 0 54 84 0 1 55 87 0 1 84 91 1 1 91 105 1 2 97 123 1 2 97 125 1 2 123 239 2 5 131 253 2 5 242 251 5 6 259 273 5 6 
 */
-    char buff[5000] = "   timeAttr->addValue(timeStampStr);";
+  //    char buff[5000] = "   timeAttr->addValue(timeStampStr);";
     /*     string timeStampStr = currentTimeStamp();
    // add create time stamp attribute
    atxl_Attribute *timeAttr =
@@ -871,7 +872,7 @@ int main()
    }
    timeAttr->addValue(timeStampStr);
    ";*/
-      char buff1[5000] = "   {
+    /*  char buff1[5000] = "   {
      string timeStampStr = currentTimeStamp();
      // add create time stamp attribute
      atxl_Attribute *timeAttr =
@@ -882,7 +883,7 @@ int main()
      } else {
        timeAttr->values().clear();
      }
-     timeAttr->addValue(timeStampStr);";
+     timeAttr->addValue(timeStampStr);";*/
     /*      char buff[5000] = "missixissipix";
     char buff1[5000] = "mxissisxsip";
         char buff[5000] = "missixxixssip";
@@ -910,6 +911,14 @@ int main()
   //  char buff1[5000] = "         attrName == ATXL_CREATETIMESTAMP_ATTR ||
   //     attrName == ATXL_NAMINGATTRIBUTE_ATTR) {";
   {
+    char buff[5000] = "for comp in *; do
+    if [ -d $comp -a $comp != \"build\" ]; then
+        cd $comp
+";
+    char buff1[5000] = "
+# Build the controller bean
+cd controller
+";
     char *ret = ediff(buff, buff1);
     printf("%s\n", ret);
     /*int *line_attrs1, *line_attrs2, ix;

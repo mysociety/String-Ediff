@@ -1,7 +1,7 @@
 #!/usr/bin/env perl -w
 use strict;
 use Test;
-BEGIN { plan tests => 5 }
+BEGIN { plan tests => 6 }
 
 use String::Ediff;
 
@@ -10,6 +10,7 @@ ok(test2(), "SUCCESS", "FAILED test2()");
 ok(test3(), "SUCCESS", "FAILED test3()");
 ok(test4(), "SUCCESS", "FAILED test4()");
 ok(test5(), "SUCCESS", "FAILED test5()");
+ok(test6(), "SUCCESS", "FAILED test6()");
 
 sub test1 {
   my $s1 = "hello world";
@@ -80,4 +81,52 @@ sub test5 {
   return "SUCCESS";
 }
 
+sub test6 {
+  my $s1 = 'for comp in *; do
+    if [ -d $comp -a $comp != "build" ]; then
+        cd $comp
+';
+  my $s2 = '
+# Build the controller bean
+cd controller
+';
+  my $indices = String::Ediff::ediff($s1, $s2);
+  if ($indices !~ /^50 54 1 1 4 9 1 1 58 62 1 1 8 13 1 1 62 75 1 2 27 32 1 2\s*$/) {
+    print $indices, "\n";
+    my @indices = split / /, $indices;
+    print scalar(@indices), "\n";
+    for (my $i = 0; $i < @indices; $i+=8) {
+      my ($i1, $i2, undef, undef, $i3, $i4) = @indices[$i..$i+7];
+      print "$i1 $i2 $i3 $i4\n";
+      my $len1 = $i2-$i1;
+      my $len2 = $i4-$i3;
+      print "$len1 $len2\n";
+      my ($val1) = ($s1 =~ /^.{$i1}(.{$len1})/s);
+      my ($val2) = ($s2 =~ /^.{$i3}(.{$len2})/s);
+      print "$val1 $val2\n";
+    }
+    return "FAILURE";
+  }
+  return "SUCCESS";
+}
+
 exit;
+
+__DATA__
+test6
+
+          1         2         3         4         5         6         7         8
+01234567890123456789012345678901234567890123456789012345678901234567890123456789012
+for comp in *; do^    if [ -d $comp -a $comp != "build" ]; then^        cd $comp^
+for comp in *; doif [ -d $comp -a $comp != "build" ]; thencd $comp
+
+          1         2         3         4         5         6         7         8
+01234567890123456789012345678901234567890123456789012345678901234567890123456789012
+^# Build the controller bean^cd controller^
+# Build the controller beancd controller
+
+50 54 1 1 5 9 1 1 58 62 1 1 8 13 1 1 62 75 1 2 28 33 1 2 
+45 49     3 7     53 57     7 11     57 61     26 30            # before adjust
+
+fixed!
+50 54 1 1 4 9 1 1 58 62 1 1 8 13 1 1 62 75 1 2 27 32 1 2 

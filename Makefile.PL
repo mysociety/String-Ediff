@@ -3,14 +3,10 @@ use Cwd;
 
 WriteMakefile(
   NAME=>'String::Ediff',
+  'VERSION_FROM'=>'lib/String/Ediff.pm',
   LIBS=>$libs,
   OBJECT=>"st_wrap.o st.o",
-  CC=>"gcc",
-  LD=>"gcc",
-  CCCDLFLAGS => "-fpic",
-  CCDLFLAGS => "-rdynamic",
   LDDLFLAGS => "-shared",
-  LDFLAGS =>  "",
   OPTIMIZE => "-O2",
-  CCFLAGS => "-Dbool=char -DHAS_BOOL -I/usr/local/include",
+  CCFLAGS => "-D_GNU_SOURCE -Dbool=char -DHAS_BOOL -I/usr/local/include",
   );

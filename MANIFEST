@@ -1,0 +1,8 @@
+MANIFEST
+Makefile.PL
+README
+st.c
+st.h
+st_wrap.c
+lib/String/Ediff.pm
+t/01Simple.t
