@@ -139,7 +139,8 @@ static int find_unused_node(Suffix_Tree *t, int parent_id, int chr)
     if (0 > node->m_id) {  // unused slot
       return i;
     }
-    i = ++i % t->m_hash_base;
+    ++i;
+    i = i % t->m_hash_base;
     if (i < 0) {
       i += t->m_hash_base;
     }
@@ -160,7 +161,8 @@ static int find_node(Suffix_Tree *t, int parent_id, int chr)
       return i;
     }
     //    printf("%d \n", i);
-    i = ++i % t->m_hash_base;
+    ++i;
+    i = i % t->m_hash_base;
     if (i < 0) {
       i += t->m_hash_base;
     }
@@ -169,7 +171,8 @@ static int find_node(Suffix_Tree *t, int parent_id, int chr)
 
 static void increment(int *i, int base)
 {
-  *i = ++*i % base;
+  ++*i;
+  *i = *i % base;
   if (*i < 0) {
     *i += base;
   }

@@ -1,3 +1,7 @@
+2005-03-10  Bo Zou  <boxzou at yahoo.com>
+	* st.c: Fix compiler warnings on Fedora:
+          https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=150012
+
 2005-02-16  Bo Zou  <boxzou at yahoo.com>
 
 	* st.c: Fix a core dump when malloc(0) 
