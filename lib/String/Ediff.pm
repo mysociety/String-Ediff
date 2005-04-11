@@ -7,7 +7,7 @@ package String::Ediff;
 bootstrap String::Ediff;
 package String::Ediff;
 @EXPORT = qw( );
-$VERSION = sprintf('%d.%02d', (q$Revision: 0.05 $ =~ /\d+/g));
+$VERSION = sprintf('%d.%02d', (q$Revision: 0.06 $ =~ /\d+/g));
 1;
 __END__
 
@@ -24,8 +24,8 @@ String::Ediff - Produce common sub-string indices for two strings
   my $indices = String::Ediff::ediff($s1, $s2);
   print $indices, "\n"; #1 10 0 0 2 11 0 0
 
-  #                   0         1         2        0         1         2
-  #                   01234567890123456789012345   012345678901234567890123
+  #                           0         1         2        0         1         2
+  #                           01234567890123456789012345   012345678901234567890123
   print String::Ediff::ediff("hello world a hello world", "hxello worlyd xyz hello");
   # 1 10 0 0 2 11 0 0 13 20 0 0 17 23 0 0
 
@@ -69,17 +69,16 @@ el2 - end line in s2
      are in the common string.  char 4 is not.
   4. only sub-string with size >= 4 are recorded.
 
-=head1 BUGS
-
-None that I know of.
-
 =head1 AUTHOR
 
 Bo Zou, boxzou@yahoo.com
 
-=head1 SEE ALSO
+=head1 COPYRIGHT AND LICENCE
 
-perl(1)
+Copyright (C) 2003-2005 Bo Zou
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 
