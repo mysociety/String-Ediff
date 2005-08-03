@@ -1,3 +1,9 @@
+2005-08-02  Bo Zou  <boxzou at yahoo.com>
+	* st.c: Skip trailing white space (ws before \n) when adjusting.
+
+2005-04-11  Bo Zou  <boxzou at yahoo.com>
+	* Ediff.pm: Add copy right and licencing info.
+
 2005-03-10  Bo Zou  <boxzou at yahoo.com>
 	* st.c: Fix compiler warnings on Fedora:
           https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=150012

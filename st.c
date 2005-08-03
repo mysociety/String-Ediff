@@ -616,7 +616,7 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
         tmp_begin--;
       }
     }
-    if (segs->m_end1 == num_chars) {
+    if (segs->m_end1 == num_chars && '\n' != s1[i]) {
       segs->m_begin1 = tmp_begin;
       segs->m_begin_line_num1 = tmp_line_num;
       segs->m_end1 = i;
@@ -649,7 +649,13 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
       if (isspace(s1[i])) {
         if (BEGIN_LINE == state) continue;
         else {
-          trailing_ws++;
+          while (isspace(s1[i]) && '\n' != s1[i]) {
+            trailing_ws++;
+            num_chars++;
+            i++;
+          }
+          if (!isspace(s1[i]) || '\n' == s1[i]) i--;
+          continue;
         }
       } else if (BEGIN_LINE == state) {
         trailing_ws = 0;
@@ -680,7 +686,7 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
         tmp_begin--;
       }
     }
-    if (segs->m_end2 == num_chars) {
+    if (segs->m_end2 == num_chars && '\n' != s2[i]) {
       segs->m_begin2 = tmp_begin;
       segs->m_begin_line_num2 = tmp_line_num;
       segs->m_end2 = i;
@@ -707,13 +713,20 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
     if ('\n' == s2[i]) {
       line_num++;
       num_chars -= trailing_ws;
+/*       printf("white %d\n", trailing_ws); */
       trailing_ws = 0;
       state = BEGIN_LINE;
     } else {
       if (isspace(s2[i])) {
         if (BEGIN_LINE == state) continue;
         else {
-          trailing_ws++;
+          while (isspace(s2[i]) && '\n' != s2[i]) {
+            trailing_ws++;
+            num_chars++;
+            i++;
+          }
+          if (!isspace(s2[i]) || '\n' == s2[i]) i--;
+          continue;
         }
       } else if (BEGIN_LINE == state) {
         trailing_ws = 0;
@@ -721,6 +734,7 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
       } else {
         trailing_ws = 0;
       }
+/*       printf("\"%c\"\n", s2[i]); */
       num_chars++;
     }
   }

@@ -1,7 +1,7 @@
 #!/usr/bin/env perl -w
 use strict;
 use Test;
-BEGIN { plan tests => 7 }
+BEGIN { plan tests => 9 }
 
 use String::Ediff;
 
@@ -12,6 +12,8 @@ ok(test4(), "SUCCESS", "FAILED test4()");
 ok(test5(), "SUCCESS", "FAILED test5()");
 ok(test6(), "SUCCESS", "FAILED test6()");
 ok(test7(), "SUCCESS", "FAILED test7()");
+ok(test8(), "SUCCESS", "FAILED test8()");
+ok(test9(), "SUCCESS", "FAILED test9()");
 
 sub test1 {
   my $s1 = "hello world";
@@ -93,18 +95,18 @@ cd controller
 ';
   my $indices = String::Ediff::ediff($s1, $s2);
   if ($indices !~ /^50 54 1 1 4 9 1 1 58 62 1 1 8 13 1 1 62 75 1 2 27 32 1 2\s*$/) {
-    print $indices, "\n";
+    print "\t", $indices, "\n";
     my @indices = split / /, $indices;
-    print scalar(@indices), "\n";
+    print "\t", scalar(@indices), "\n";
     for (my $i = 0; $i < @indices; $i+=8) {
       my ($i1, $i2, undef, undef, $i3, $i4) = @indices[$i..$i+7];
-      print "$i1 $i2 $i3 $i4\n";
+      print "\t$i1 $i2 ! $i3 $i4\n";
       my $len1 = $i2-$i1;
       my $len2 = $i4-$i3;
-      print "$len1 $len2\n";
+      print "\t$len1 ! $len2\n";
       my ($val1) = ($s1 =~ /^.{$i1}(.{$len1})/s);
       my ($val2) = ($s2 =~ /^.{$i3}(.{$len2})/s);
-      print "$val1 $val2\n";
+      print "\t$val1 ! $val2 !\n";
     }
     return "FAILURE";
   }
@@ -122,6 +124,81 @@ sub test7 {
   my $left_diff = " 1* \$Id\$";
   my $right_diff = " 1* \$Header\$";
   my $diff_str = String::Ediff::ediff($left_diff, $right_diff);
+  return "SUCCESS";
+}
+
+sub test8 {
+  my $s2 = "
+      closeConnection(conn);
+    }
+    return artifactsList;    
+  }
+
+  /**
+";
+  my $s1 = "
+      closeConnection(conn);
+    }
+    return artifactsList;		
+  }
+
+  /**
+";
+
+  my $indices = String::Ediff::ediff($s1, $s2);
+  if ($indices !~ /^0 75 0 7 0 77 0 7\s*$/) {
+    print $indices, "\n";
+    return "FAILURE";
+  }
+  return "SUCCESS";
+}
+
+sub test9 {
+  {
+    my $s2 = "    }
+    return artifactInfo;
+
+  }        
+
+  /**
+   * ";
+    my $s1 = "    }
+    return artifactInfo;
+
+  }				
+
+  /**
+   * ";
+    my $indices = String::Ediff::ediff($s1, $s2);
+    if ($indices !~ /^0 52 0 6 0 56 0 6\s*$/) {
+      print length($s1), " ", length($s2), "\n";
+      print $indices, "\n";
+      return "FAILURE";
+    }
+  }
+  {
+    my $s2 = "    }
+    return artifactInfo;
+
+  }        
+
+  /**
+";
+    my $s1 = "    }
+    return artifactInfo;
+
+  }				
+
+  /**
+";
+
+    my $indices = String::Ediff::ediff($s1, $s2);
+    if ($indices !~ /^0 47 0 6 0 51 0 6\s*$/) {
+      print length($s1), " ", length($s2), "\n";
+      print $indices, "\n";
+      return "FAILURE";
+    }
+  }
   return "SUCCESS";
 }
 
