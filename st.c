@@ -616,7 +616,7 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
         tmp_begin--;
       }
     }
-    if (segs->m_end1 == num_chars && '\n' != s1[i]) {
+    if (segs->m_end1 <= num_chars && '\n' != s1[i]) {
       segs->m_begin1 = tmp_begin;
       segs->m_begin_line_num1 = tmp_line_num;
       segs->m_end1 = i;
@@ -686,7 +686,7 @@ static void adjust(equal_segment *equal_segs, const char *s1, const char *s2)
         tmp_begin--;
       }
     }
-    if (segs->m_end2 == num_chars && '\n' != s2[i]) {
+    if (segs->m_end2 <= num_chars && '\n' != s2[i]) {
       segs->m_begin2 = tmp_begin;
       segs->m_begin_line_num2 = tmp_line_num;
       segs->m_end2 = i;

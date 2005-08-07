@@ -1,7 +1,7 @@
 #!/usr/bin/env perl -w
 use strict;
 use Test;
-BEGIN { plan tests => 9 }
+BEGIN { plan tests => 10 }
 
 use String::Ediff;
 
@@ -14,6 +14,7 @@ ok(test6(), "SUCCESS", "FAILED test6()");
 ok(test7(), "SUCCESS", "FAILED test7()");
 ok(test8(), "SUCCESS", "FAILED test8()");
 ok(test9(), "SUCCESS", "FAILED test9()");
+ok(test10(), "SUCCESS", "FAILED test10()");
 
 sub test1 {
   my $s1 = "hello world";
@@ -95,19 +96,7 @@ cd controller
 ';
   my $indices = String::Ediff::ediff($s1, $s2);
   if ($indices !~ /^50 54 1 1 4 9 1 1 58 62 1 1 8 13 1 1 62 75 1 2 27 32 1 2\s*$/) {
-    print "\t", $indices, "\n";
-    my @indices = split / /, $indices;
-    print "\t", scalar(@indices), "\n";
-    for (my $i = 0; $i < @indices; $i+=8) {
-      my ($i1, $i2, undef, undef, $i3, $i4) = @indices[$i..$i+7];
-      print "\t$i1 $i2 ! $i3 $i4\n";
-      my $len1 = $i2-$i1;
-      my $len2 = $i4-$i3;
-      print "\t$len1 ! $len2\n";
-      my ($val1) = ($s1 =~ /^.{$i1}(.{$len1})/s);
-      my ($val2) = ($s2 =~ /^.{$i3}(.{$len2})/s);
-      print "\t$val1 ! $val2 !\n";
-    }
+    test_dump($indices, $s1, $s2);
     return "FAILURE";
   }
   return "SUCCESS";
@@ -200,6 +189,65 @@ sub test9 {
     }
   }
   return "SUCCESS";
+}
+
+sub test10 {
+  my $s2 = "  
+  static final long serialVersionUID = 647693002927539822L;
+  
+  static final public String TYPE_SERVICE  				= \"Service\"; 
+  static final public String TYPE_BUILDING_BLOCK  = \"BuildingBlock\"; 
+  static final public String TYPE_OTHER  					= \"Other\"; 
+  
+  static final public String STATUS_NOT_DEPLOYED  		= \"STATUS_NOT_DEPLOYED\"; 
+  static final public String STATUS_DEPLOYED  	  		= \"STATUS_DEPLOYED\"; 
+  static final public String STATUS_PARTIALLY_DEPLOYED  = \"STATUS_PARTIALLY_DEPLOYED\";
+  
+  static final public String SERVICE_STATE_DISCARDED  	  = \"SERVICE_STATE_DISCARDED\"; 
+  static final public String SERVICE_STATE_ACTIVE  	  		= \"SERVICE_STATE_ACTIVE\"; 
+  
+  protected String name = \"\";                               // maps DB field
+  protected String version = \"\";                            // maps DB field";
+  my $s1 = "  
+  static final long serialVersionUID = 647693002927539822L;
+  
+  static final public String TYPE_SERVICE          = \"Service\"; 
+  static final public String TYPE_BUILDING_BLOCK  = \"BuildingBlock\"; 
+  static final public String TYPE_OTHER            = \"Other\"; 
+  
+  static final public String STATUS_NOT_DEPLOYED      = \"STATUS_NOT_DEPLOYED\"; 
+  static final public String STATUS_DEPLOYED          = \"STATUS_DEPLOYED\"; 
+  static final public String STATUS_PARTIALLY_DEPLOYED  = \"STATUS_PARTIALLY_DEPLOYED\";
+  
+  static final public String SERVICE_STATE_DISCARDED      = \"SERVICE_STATE_DISCARDED\"; 
+  static final public String SERVICE_STATE_ACTIVE          = \"SERVICE_STATE_ACTIVE\"; 
+  
+  protected String name = \"\";                               // maps DB field
+  protected String version = \"\";                            // maps DB field";
+
+  my $indices = String::Ediff::ediff($s1, $s2);
+  if ($indices !~ /^0 117 0 3 0 113 0 3 107 252 3 5 107 243 3 5 240 321 5 7 236 310 5 7 315 401 7 8 306 387 7 8 391 571 8 11 380 556 8 11 391 660 8 12 380 642 8 12 650 843 12 15 635 825 12 15\s*$/) {
+    test_dump($indices, $s1, $s2);
+    return "FAILURE";
+  }
+  return "SUCCESS";
+}
+
+sub test_dump {
+  my ($indices, $s1, $s2) = @_;
+  print "\t", $indices, "\n";
+  my @indices = split / /, $indices;
+  print "\t", scalar(@indices), "\n";
+  for (my $i = 0; $i < @indices; $i+=8) {
+    my ($i1, $i2, undef, undef, $i3, $i4) = @indices[$i..$i+7];
+    print "\t!$i1 $i2 ! $i3 $i4!\n";
+    my $len1 = $i2-$i1;
+    my $len2 = $i4-$i3;
+    print "\t!$len1 ! $len2!\n";
+    my ($val1) = ($s1 =~ /^.{$i1}(.{$len1})/s);
+    my ($val2) = ($s2 =~ /^.{$i3}(.{$len2})/s);
+    print "\t!$val1 ! $val2!\n";
+  }
 }
 
 exit;

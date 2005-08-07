@@ -1,3 +1,6 @@
+2005-08-03  Bo Zou  <boxzou at yahoo.com>
+	* st.c: white space in middle of line.
+
 2005-08-02  Bo Zou  <boxzou at yahoo.com>
 	* st.c: Skip trailing white space (ws before \n) when adjusting.
 
