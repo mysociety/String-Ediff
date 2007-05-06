@@ -17,8 +17,8 @@ struct Active_Point
 
 struct Suffix_Tree_Node
 {
-  int m_begin_char_idx; // inclusive
-  int m_end_char_idx;   // inclusive
+  int m_begin_char_idx; /* inclusive */
+  int m_end_char_idx;   /* inclusive */
   int m_parent;
   int m_id;
   int m_child;
@@ -71,10 +71,12 @@ static int implicit(Active_Point *ap)
   return ap->m_begin_idx <= ap->m_end_idx;
 }
 
-//static int explicit(Active_Point *ap)
-//{
-//  return ap->m_begin_idx > ap->m_end_idx;
-//}
+/*
+static int explicit(Active_Point *ap)
+{
+  return ap->m_begin_idx > ap->m_end_idx;
+}
+*/
 
 static int hash(Suffix_Tree *t, int parent_id, int chr)
 {
@@ -130,13 +132,13 @@ static char node_contains(Suffix_Tree_Node *node, int pos)
   return node->m_begin_char_idx <= pos && pos <= node->m_end_char_idx;
 }
 
-// find a node(edge) which is a child of 'parent_id' and begin with 'chr'
+/* find a node(edge) which is a child of 'parent_id' and begin with 'chr' */
 static int find_unused_node(Suffix_Tree *t, int parent_id, int chr)
 {
   int i = hash(t, parent_id, chr);
   while (1) {
     Suffix_Tree_Node *node = t->m_nodes + i;
-    if (0 > node->m_id) {  // unused slot
+    if (0 > node->m_id) {  /* unused slot */
       return i;
     }
     ++i;
@@ -147,20 +149,20 @@ static int find_unused_node(Suffix_Tree *t, int parent_id, int chr)
   }
 }
 
-// find a node(edge) which is a child of 'parent_id' and begin with 'chr'
+/* find a node(edge) which is a child of 'parent_id' and begin with 'chr' */
 static int find_node(Suffix_Tree *t, int parent_id, int chr)
 {
   int i = hash(t, parent_id, chr);
   while (1) {
     Suffix_Tree_Node *node = t->m_nodes + i;
-    if (-1 == node->m_id) {  // unused slot
+    if (-1 == node->m_id) {  /* unused slot */
       return i;
     }
     if (node->m_parent == parent_id &&
         node_begin_char(t, node) == chr) {
       return i;
     }
-    //    printf("%d \n", i);
+    /*    printf("%d \n", i); */
     ++i;
     i = i % t->m_hash_base;
     if (i < 0) {
@@ -185,7 +187,7 @@ static int new_node(Suffix_Tree *t, int begin_idx, int end_idx, int parent)
   i = find_unused_node(t, parent, t->m_str[begin_idx]);
   {
     Suffix_Tree_Node *node = t->m_nodes + i;
-    assert (0 > node->m_id); // unused or removed
+    assert (0 > node->m_id); /* unused or removed */
     ctor_node(node, begin_idx, end_idx, parent, t->m_size);
   }
   return i;
@@ -207,15 +209,16 @@ static int split_edge(Suffix_Tree *t, Active_Point *ap)
   assert(ap_end_char(t, ap) != node_any_char(t, node, ap_span(ap)));
   assert(ap_any_char(t, ap, ap_span(ap)-1) == node_any_char(t, node, ap_span(ap)-1));
 
-  // match up to [ap_span(ap) - 1], see last two assertions
-  // we want to reuse the existing node because parent and the first char
-  // does not change, so what we create below is actually the existing node
-  // We have to adjust the node "node"
+  /* match up to [ap_span(ap) - 1], see last two assertions
+   * we want to reuse the existing node because parent and the first char
+   * does not change, so what we create below is actually the existing node
+   * We have to adjust the node "node"
+   */
   i = new_node(t, node->m_begin_char_idx + ap_span(ap),
                node->m_end_char_idx,
-               t->m_size+1);  // parent is the newly created id
+               t->m_size+1);  /* parent is the newly created id */
 
-  // swap node id because the new node should be parent of the existing node.
+  /* swap node id because the new node should be parent of the existing node. */
   tmp_node = t->m_nodes + i;
   tmp_node->m_id = node->m_id;
 
@@ -244,9 +247,9 @@ static void canonize(Suffix_Tree *t, Active_Point *ap)
 
 static void follow_suffix_link(Suffix_Tree *t, Active_Point *ap)
 {
-  if (ap->m_node_id) { // not root
+  if (ap->m_node_id) { /* not root */
     ap->m_node_id = t->m_suffix[ap->m_node_id];
-  } else { // root
+  } else { /* root */
     ap->m_begin_idx++;
   }
   canonize(t, ap);
@@ -262,7 +265,7 @@ static void update(Suffix_Tree *t, Active_Point *ap)
 
     if (node->m_id < 0) {
       assert(ap_span(ap) == 0);
-      // new node
+      /* new node */
       new_node(t, ap->m_end_idx, t->m_strlen - 1, ap->m_node_id);
       if (last_parent > 0) {
         assert(t->m_suffix[last_parent] == ap->m_node_id
@@ -277,13 +280,13 @@ static void update(Suffix_Tree *t, Active_Point *ap)
       if (edge_span(node) == ap_span(ap) - 1) {
         
       }
-      if (node_any_char(t, node, ap_span(ap)) == ap_end_char(t, ap)) { // match
+      if (node_any_char(t, node, ap_span(ap)) == ap_end_char(t, ap)) { /* match */
         if (last_parent > 0) {
-          // suffix link: last_parent -> current's parent
+          /* suffix link: last_parent -> current's parent */
           t->m_suffix[last_parent] = node->m_parent;
         }
         break;
-      } else { // last char in active point not match
+      } else { /* last char in active point not match */
         int parent;
         assert(ap_span(ap) > 0);
         assert(ap_any_char(t, ap, ap_span(ap) - 1) ==
@@ -349,9 +352,10 @@ static void suffix_tree_init(Suffix_Tree *t, char *str)
     for (;ap.m_end_idx < t->m_strlen; ap.m_end_idx++) {
       canonize(t, &ap);
       update(t, &ap);
-      //      print(t);
-      //      print_ap(&ap);
-      //      printf("-----------------------------------------------\n\n");
+      /*      print(t);
+            print_ap(&ap);
+            printf("-----------------------------------------------\n\n");
+	    */
     }
   }
 }
@@ -379,7 +383,7 @@ static void calc_lcs(Suffix_Tree *t, int s1_len, int id, int depth,
   } else {
     int child = node->m_child;
     int t1, t2;
-    //    assert(node->m_child > 0);
+    /*    assert(node->m_child > 0); */
 
     while (child > 0) {
       Suffix_Tree_Node *nc = t->m_nodes + child;
@@ -417,7 +421,7 @@ static void traverse_mark(Suffix_Tree *t, int s1_len, int id)
     node->m_in_s2 = 1;
   } else {
     int child = node->m_child;
-    //    assert(node->m_child > 0);
+    /*    assert(node->m_child > 0); */
     while (child > 0) {
       Suffix_Tree_Node *nc = t->m_nodes + child;
       traverse_mark(t, s1_len, child);
@@ -437,14 +441,14 @@ static void lcs(int *pos1, int *pos2, int *len,
     (char *)malloc(sizeof(const char) * (s1_len + s2_len + 2));
   Suffix_Tree t;
   strncpy((char*)buff, (char*)s1, s1_len);
-  buff[s1_len] = DOLLAR_SIGN;  // as '$'
+  buff[s1_len] = DOLLAR_SIGN;  /* as '$' */
   strncpy(buff + s1_len + 1, s2, s2_len);
   buff[s1_len + s2_len + 1] = 0;
   suffix_tree_init(&t, buff);
   {
-    // construct child and sibling
+    /* construct child and sibling */
     int i;
-    // first move node to their proper destination based on their id
+    /* first move node to their proper destination based on their id */
     for (i = 0; i < t.m_hash_base; i++) {
       Suffix_Tree_Node *node = t.m_nodes + i;
       while (node->m_id > 0 && node->m_id != i) {
@@ -454,10 +458,10 @@ static void lcs(int *pos1, int *pos2, int *len,
       }
     }
     
-    // set up root (node 0)
+    /* set up root (node 0) */
     ctor_node(t.m_nodes, 0, -1, -1, 0);
 
-    // construct the tree
+    /* construct the tree */
     for (i = 1; i < t.m_hash_base; i++) {
       Suffix_Tree_Node *node = t.m_nodes + i;
       Suffix_Tree_Node *parent;
@@ -468,7 +472,7 @@ static void lcs(int *pos1, int *pos2, int *len,
       node->m_sibling = parent->m_child;
       parent->m_child = node->m_id;
     }
-    // post order traversal
+    /* post order traversal */
     {
       traverse_mark(&t, s1_len, 0);
       calc_lcs(&t, s1_len, 0, 0, len, pos1, pos2);      
@@ -484,10 +488,11 @@ static void lcs(int *pos1, int *pos2, int *len,
   free(buff);
 }
 
-// 1. count the number of lines ("\n").
-// 2. record the begin and end position of each line, ignoring
-//    leading and trailing white spaces, including "\n"
-// 3. 
+/* 1. count the number of lines ("\n").
+ * 2. record the begin and end position of each line, ignoring
+ *    leading and trailing white spaces, including "\n"
+ * 3. 
+ */
 #define BEGIN_LINE 0
 
 static void normalize(char **ostr, int **line_attrs, char *istr, int len)
@@ -531,7 +536,7 @@ static void normalize(char **ostr, int **line_attrs, char *istr, int len)
   
   tmp_str -= trailing_ws;
   (*line_attrs)[num_lines] = tmp_str - *ostr;
-  *tmp_str = 0;  // terminate the string
+  *tmp_str = 0;  /* terminate the string */
 }
 
 typedef struct equal_segment equal_segment;
@@ -576,7 +581,7 @@ static void diff(equal_segment **segs, char const *orig_s1,
     return;
   }
   
-  // traversal order: right, left, root
+  /* traversal order: right, left, root */
   if (len1 - pos1 - len >= 4 && len2 - pos2 - len >= 4) {
     diff(segs, orig_s1, s1 + pos1 + len, len1 - pos1 - len,
          orig_s2, s2 + pos2 + len, len2 - pos2 - len);
@@ -744,7 +749,7 @@ char *ediff(char *s1, char *s2)
 {
   int *line_attrs1, *line_attrs2, ix = 0;
   char *ostr1, *ostr2, *ret;
-  //    int pos1, pos2, len = 0;
+  /*    int pos1, pos2, len = 0; */
   equal_segment *equals = NULL, *tmp_seg;
 
   normalize(&ostr1, &line_attrs1, s1, strlen(s1));

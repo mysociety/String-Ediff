@@ -7,7 +7,7 @@ package String::Ediff;
 bootstrap String::Ediff;
 package String::Ediff;
 @EXPORT = qw( );
-$VERSION = sprintf('%d.%02d', (q$Revision: 0.08 $ =~ /\d+/g));
+$VERSION = sprintf('%d.%02d', (q$Revision: 0.09 $ =~ /\d+/g));
 1;
 __END__
 

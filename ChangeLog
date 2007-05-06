@@ -1,3 +1,13 @@
+2007-05-04  Bo Zou  <boxzou at yahoo.com>
+	* Makefile.PL: removed LDDLFLAGS, OPTIMIZE, CCFLAGS based on recommendations in
+                       https://rt.cpan.org/Public/Bug/Display.html?id=15270
+	* st.c: replace // with /* */
+        The changes here should also fix: http://rt.cpan.org/Public/Bug/Display.html?id=4646
+        Raised by: guest (?)
+        Investigated by: Ryan Wagner and Billy Zophar
+        Tested by: Roger Persson
+        Thank you all.
+
 2005-08-03  Bo Zou  <boxzou at yahoo.com>
 	* st.c: white space in middle of line.
 
