@@ -1,3 +1,7 @@
+2019-05-22  Matthew Somerville <matthew at mysociety.org>
+	* Add line to st.h to include header in wrapper code, recompile with swig,
+	  fixes https://rt.cpan.org/Ticket/Display.html?id=121151
+
 2007-05-04  Bo Zou  <boxzou at yahoo.com>
 	* Makefile.PL: removed LDDLFLAGS, OPTIMIZE, CCFLAGS based on recommendations in
                        https://rt.cpan.org/Public/Bug/Display.html?id=15270

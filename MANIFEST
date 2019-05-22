@@ -1,9 +1,10 @@
 ChangeLog
 MANIFEST
 Makefile.PL
-README
+README.pod
 st.c
 st.h
 st_wrap.c
 lib/String/Ediff.pm
+lib/String/Ediff.pod
 t/01Simple.t
